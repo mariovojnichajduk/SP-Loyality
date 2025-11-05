@@ -1,4 +1,4 @@
-import { useState, useRef, type FormEvent, type KeyboardEvent } from 'react';
+import { useState, useRef, type FormEvent, type KeyboardEvent, type ClipboardEvent } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import authService from '../../services/authService';
@@ -15,22 +15,57 @@ export default function ResetPassword() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleCodeChange = (index: number, value: string) => {
-    if (value.length > 1) {
-      value = value[0];
+    // Only allow numeric input
+    const numericValue = value.replace(/[^0-9]/g, '');
+
+    if (!numericValue) {
+      return;
     }
 
     const newCode = [...code];
-    newCode[index] = value;
-    setCode(newCode);
 
-    if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus();
+    // Handle single digit input
+    if (numericValue.length === 1) {
+      newCode[index] = numericValue;
+      setCode(newCode);
+
+      // Auto-focus next input
+      if (index < 5) {
+        inputRefs.current[index + 1]?.focus();
+      }
     }
   };
 
   const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && !code[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      const newCode = [...code];
+
+      if (code[index]) {
+        // Clear current input
+        newCode[index] = '';
+        setCode(newCode);
+      } else if (index > 0) {
+        // Move to previous input and clear it
+        newCode[index - 1] = '';
+        setCode(newCode);
+        inputRefs.current[index - 1]?.focus();
+      }
+    }
+  };
+
+  const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+
+    if (pastedData.length === 6) {
+      const newCode = pastedData.split('');
+      setCode(newCode);
+      // Focus the last input
+      inputRefs.current[5]?.focus();
+      toast.success('Code pasted successfully');
+    } else if (pastedData.length > 0) {
+      toast.error('Please paste a valid 6-digit code');
     }
   };
 
@@ -102,8 +137,9 @@ export default function ResetPassword() {
                   value={digit}
                   onChange={(e) => handleCodeChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
+                  onPaste={handlePaste}
                   className={styles.codeInput}
-                  required
+                  autoComplete="one-time-code"
                 />
               ))}
             </div>
