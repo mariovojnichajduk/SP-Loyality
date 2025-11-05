@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import authService from '../../services/authService';
 import styles from './Auth.module.css';
 
@@ -8,21 +9,19 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError('');
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters long');
+      toast.error('Password must be at least 8 characters long');
       return;
     }
 
@@ -30,10 +29,12 @@ export default function Register() {
 
     try {
       await authService.register({ name, email, password });
-      navigate('/verify-email', { state: { email } });
+      toast.success('Registration successful! Please verify your email.');
+      setLoading(false);
+      setTimeout(() => navigate('/verify-email', { state: { email } }), 500);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
-    } finally {
+      const errorMessage = err.response?.data?.message || 'Registration failed. Please try again.';
+      toast.error(errorMessage);
       setLoading(false);
     }
   };
@@ -47,12 +48,6 @@ export default function Register() {
         </div>
 
         <form onSubmit={handleSubmit} className={styles.authForm}>
-          {error && (
-            <div className={styles.errorMessage}>
-              {error}
-            </div>
-          )}
-
           <div className={styles.formGroup}>
             <label htmlFor="name">Full Name</label>
             <input

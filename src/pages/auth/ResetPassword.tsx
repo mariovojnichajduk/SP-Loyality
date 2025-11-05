@@ -1,5 +1,6 @@
 import { useState, useRef, type FormEvent, type KeyboardEvent } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import authService from '../../services/authService';
 import styles from './Auth.module.css';
 
@@ -7,7 +8,6 @@ export default function ResetPassword() {
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,21 +36,20 @@ export default function ResetPassword() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError('');
 
     const resetCode = code.join('');
     if (resetCode.length !== 6) {
-      setError('Please enter the complete 6-digit code');
+      toast.error('Please enter the complete 6-digit code');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
 
     if (newPassword.length < 8) {
-      setError('Password must be at least 8 characters long');
+      toast.error('Password must be at least 8 characters long');
       return;
     }
 
@@ -62,10 +61,12 @@ export default function ResetPassword() {
         code: resetCode,
         newPassword,
       });
-      navigate('/login', { state: { message: 'Password reset successful. Please log in.' } });
+      toast.success('Password reset successful! Please log in.');
+      setLoading(false);
+      setTimeout(() => navigate('/login', { state: { message: 'Password reset successful. Please log in.' } }), 500);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Password reset failed. Please try again.');
-    } finally {
+      const errorMessage = err.response?.data?.message || 'Password reset failed. Please try again.';
+      toast.error(errorMessage);
       setLoading(false);
     }
   };
@@ -87,12 +88,6 @@ export default function ResetPassword() {
         </div>
 
         <form onSubmit={handleSubmit} className={styles.authForm}>
-          {error && (
-            <div className={styles.errorMessage}>
-              {error}
-            </div>
-          )}
-
           <div className={styles.formGroup}>
             <label>Verification Code</label>
             <div className={styles.codeInputs}>
