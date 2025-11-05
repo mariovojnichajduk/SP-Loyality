@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import type { ProcessReceiptResponse } from '../services/receiptService';
+import productService from '../services/productService';
 import styles from './ReceiptModal.module.css';
 
 interface ReceiptModalProps {
@@ -9,12 +11,58 @@ interface ReceiptModalProps {
 }
 
 export default function ReceiptModal({ isOpen, onClose, receiptData }: ReceiptModalProps) {
-  if (!isOpen || !receiptData) return null;
+  const [approvalStatus, setApprovalStatus] = useState<Record<string, boolean>>({});
+  const [loadingStatus, setLoadingStatus] = useState(false);
 
-  const handleRequestApproval = (productName: string) => {
-    // TODO: Implement approval request API call
-    toast.info(`Approval request for "${productName}" will be implemented`);
+  useEffect(() => {
+    if (isOpen) {
+      fetchApprovalStatus();
+    }
+  }, [isOpen]);
+
+  const fetchApprovalStatus = async () => {
+    try {
+      setLoadingStatus(true);
+      const response = await productService.getApprovalStatus();
+      setApprovalStatus(response.approvalStatus);
+    } catch (error) {
+      console.error('Failed to fetch approval status:', error);
+    } finally {
+      setLoadingStatus(false);
+    }
   };
+
+  const handleRequestApproval = async (productName: string) => {
+    try {
+      const requestData: { productName: string; shopId?: string; rawStoreName?: string } = {
+        productName,
+      };
+
+      // Only include shopId if it exists
+      if (receiptData.shopId) {
+        requestData.shopId = receiptData.shopId;
+      }
+
+      // Include rawStoreName for shop lookup if not found by cleaned name
+      if (receiptData.rawStoreName) {
+        requestData.rawStoreName = receiptData.rawStoreName;
+      }
+
+      const response = await productService.requestApproval(requestData);
+      toast.success(`Approval requested for "${productName}"`);
+
+      // Update approval status to disable the button
+      setApprovalStatus(prev => ({
+        ...prev,
+        [productName]: true,
+      }));
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to request approval';
+      toast.error(errorMessage);
+    }
+  };
+
+  if (!isOpen || !receiptData) return null;
 
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -25,7 +73,11 @@ export default function ReceiptModal({ isOpen, onClose, receiptData }: ReceiptMo
   const missingProducts = receiptData.products.filter(p => p.doesExist === false);
   const existingProducts = receiptData.products.filter(p => p.doesExist === true);
 
-  const totalPoints = existingProducts.reduce((sum, product) => {
+  // Separate existing products into approved and pending
+  const approvedProducts = existingProducts.filter(p => (p.pointValue || 0) > 0);
+  const pendingProducts = existingProducts.filter(p => p.pointValue === 0);
+
+  const totalPoints = approvedProducts.reduce((sum, product) => {
     return sum + (product.pointValue || 0) * product.quantity;
   }, 0);
 
@@ -51,17 +103,17 @@ export default function ReceiptModal({ isOpen, onClose, receiptData }: ReceiptMo
             </div>
           )}
 
-          {existingProducts.length > 0 && (
+          {approvedProducts.length > 0 && (
             <div className={styles.section}>
               <h3 className={styles.sectionTitle}>
                 <svg className={styles.checkIcon} viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
                   <path d="M8 12l3 3 5-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Products Found ({existingProducts.length})
+                Approved Products ({approvedProducts.length})
               </h3>
               <div className={styles.productList}>
-                {existingProducts.map((product, index) => (
+                {approvedProducts.map((product, index) => (
                   <div key={index} className={styles.productItem}>
                     <div className={styles.productInfo}>
                       <span className={styles.productName}>{product.product}</span>
@@ -74,6 +126,31 @@ export default function ReceiptModal({ isOpen, onClose, receiptData }: ReceiptMo
                         )}
                       </div>
                     </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {pendingProducts.length > 0 && (
+            <div className={styles.section}>
+              <h3 className={styles.sectionTitle}>
+                <svg className={styles.pendingIcon} viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                  <path d="M12 6v6l4 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+                Pending Approval ({pendingProducts.length})
+              </h3>
+              <div className={styles.productList}>
+                {pendingProducts.map((product, index) => (
+                  <div key={index} className={styles.productItemPending}>
+                    <div className={styles.productInfo}>
+                      <span className={styles.productName}>{product.product}</span>
+                      <div className={styles.productMeta}>
+                        <span className={styles.productQuantity}>x{product.quantity}</span>
+                      </div>
+                    </div>
+                    <span className={styles.pendingLabel}>Pending Approval</span>
                   </div>
                 ))}
               </div>
@@ -98,8 +175,9 @@ export default function ReceiptModal({ isOpen, onClose, receiptData }: ReceiptMo
                     <button
                       onClick={() => handleRequestApproval(product.product)}
                       className={styles.approvalButton}
+                      disabled={approvalStatus[product.product] === true}
                     >
-                      Request Approval
+                      {approvalStatus[product.product] ? 'Pending' : 'Request Approval'}
                     </button>
                   </div>
                 ))}
@@ -107,8 +185,8 @@ export default function ReceiptModal({ isOpen, onClose, receiptData }: ReceiptMo
             </div>
           )}
 
-          <div className={styles.summarySection}>
-            {totalPoints > 0 && (
+          {totalPoints > 0 && (
+            <div className={styles.summarySection}>
               <div className={styles.pointsTotal}>
                 <span className={styles.pointsLabel}>
                   <svg className={styles.coinIcon} viewBox="0 0 24 24" fill="none">
@@ -119,20 +197,13 @@ export default function ReceiptModal({ isOpen, onClose, receiptData }: ReceiptMo
                 </span>
                 <span className={styles.pointsTotalValue}>{totalPoints}</span>
               </div>
-            )}
-
-            {receiptData.totalAmount && (
-              <div className={styles.totalSection}>
-                <span className={styles.totalLabel}>Total Amount:</span>
-                <span className={styles.totalAmount}>{receiptData.totalAmount.toFixed(2)} RSD</span>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         <div className={styles.footer}>
           <button onClick={onClose} className={styles.doneButton}>
-            Done
+            Collect Points
           </button>
         </div>
       </div>

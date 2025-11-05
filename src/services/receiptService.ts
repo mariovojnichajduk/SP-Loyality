@@ -9,9 +9,10 @@ export interface ReceiptProduct {
 
 export interface ProcessReceiptResponse {
   products: ReceiptProduct[];
-  totalAmount?: number;
   receiptDate?: string;
   storeName?: string;
+  rawStoreName?: string;
+  shopId?: string;
 }
 
 class ReceiptService {

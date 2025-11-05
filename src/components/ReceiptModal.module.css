@@ -111,6 +111,12 @@
   color: #f59e0b;
 }
 
+.pendingIcon {
+  width: 24px;
+  height: 24px;
+  color: #fbbf24;
+}
+
 .productList {
   display: flex;
   flex-direction: column;
@@ -118,7 +124,8 @@
 }
 
 .productItem,
-.productItemMissing {
+.productItemMissing,
+.productItemPending {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -131,6 +138,11 @@
 .productItemMissing {
   background-color: rgba(245, 158, 11, 0.1);
   border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.productItemPending {
+  background-color: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
 }
 
 .productInfo {
@@ -178,8 +190,25 @@
   white-space: nowrap;
 }
 
-.approvalButton:hover {
+.approvalButton:hover:not(:disabled) {
   background-color: var(--color-accent-hover);
+}
+
+.approvalButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+}
+
+.pendingLabel {
+  background-color: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .summarySection {
@@ -281,12 +310,18 @@
   }
 
   .productItem,
-  .productItemMissing {
+  .productItemMissing,
+  .productItemPending {
     flex-direction: column;
     align-items: flex-start;
   }
 
   .approvalButton {
     width: 100%;
+  }
+
+  .pendingLabel {
+    width: 100%;
+    text-align: center;
   }
 }
