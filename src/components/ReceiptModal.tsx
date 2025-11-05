@@ -2,17 +2,20 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import type { ProcessReceiptResponse } from '../services/receiptService';
 import productService from '../services/productService';
+import receiptService from '../services/receiptService';
 import styles from './ReceiptModal.module.css';
 
 interface ReceiptModalProps {
   isOpen: boolean;
   onClose: () => void;
   receiptData: ProcessReceiptResponse | null;
+  onPointsCollected?: () => void;
 }
 
-export default function ReceiptModal({ isOpen, onClose, receiptData }: ReceiptModalProps) {
+export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCollected }: ReceiptModalProps) {
   const [approvalStatus, setApprovalStatus] = useState<Record<string, boolean>>({});
   const [loadingStatus, setLoadingStatus] = useState(false);
+  const [collectingPoints, setCollectingPoints] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -62,6 +65,29 @@ export default function ReceiptModal({ isOpen, onClose, receiptData }: ReceiptMo
     }
   };
 
+  const handleCollectPoints = async () => {
+    if (!receiptData) return;
+
+    try {
+      setCollectingPoints(true);
+      const response = await receiptService.collectPoints(receiptData);
+      toast.success(`${response.pointsAwarded} points collected successfully!`);
+
+      // Notify parent to refresh points
+      if (onPointsCollected) {
+        onPointsCollected();
+      }
+
+      onClose();
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to collect points';
+      toast.error(errorMessage);
+      console.error('Error collecting points:', error);
+    } finally {
+      setCollectingPoints(false);
+    }
+  };
+
   if (!isOpen || !receiptData) return null;
 
   const handleOverlayClick = (e: React.MouseEvent) => {
@@ -94,9 +120,11 @@ export default function ReceiptModal({ isOpen, onClose, receiptData }: ReceiptMo
         </div>
 
         <div className={styles.content}>
-          {receiptData.storeName && (
+          {(receiptData.storeName || receiptData.rawStoreName) && (
             <div className={styles.infoSection}>
-              <p className={styles.storeName}>{receiptData.storeName}</p>
+              <p className={styles.storeName}>
+                {receiptData.storeName || receiptData.rawStoreName}
+              </p>
               {receiptData.receiptDate && (
                 <p className={styles.receiptDate}>{receiptData.receiptDate}</p>
               )}
@@ -202,8 +230,12 @@ export default function ReceiptModal({ isOpen, onClose, receiptData }: ReceiptMo
         </div>
 
         <div className={styles.footer}>
-          <button onClick={onClose} className={styles.doneButton}>
-            Collect Points
+          <button
+            onClick={handleCollectPoints}
+            className={styles.doneButton}
+            disabled={collectingPoints || totalPoints === 0}
+          >
+            {collectingPoints ? 'Collecting...' : 'Collect Points'}
           </button>
         </div>
       </div>

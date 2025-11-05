@@ -86,6 +86,16 @@ export default function Dashboard() {
     setReceiptData(null);
   };
 
+  const handlePointsCollected = async () => {
+    // Refresh user points after collection
+    try {
+      const points = await pointsService.getUserPoints();
+      setUserPoints(points);
+    } catch (error) {
+      console.error('Error refreshing points:', error);
+    }
+  };
+
   return (
     <div className={styles.container}>
       <Header points={userPoints} />
@@ -183,6 +193,7 @@ export default function Dashboard() {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         receiptData={receiptData}
+        onPointsCollected={handlePointsCollected}
       />
 
       <QRScannerModal

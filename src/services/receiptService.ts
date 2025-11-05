@@ -22,6 +22,13 @@ class ReceiptService {
     });
     return response.data;
   }
+
+  async collectPoints(receiptData: ProcessReceiptResponse): Promise<{ message: string; pointsAwarded: number; transactionId: string }> {
+    const response = await api.post('/receipts/collect-points', {
+      receiptData,
+    });
+    return response.data;
+  }
 }
 
 export default new ReceiptService();
