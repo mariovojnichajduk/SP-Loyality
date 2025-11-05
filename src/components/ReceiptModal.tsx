@@ -15,10 +15,13 @@ interface ReceiptModalProps {
 export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCollected }: ReceiptModalProps) {
   const [approvalStatus, setApprovalStatus] = useState<Record<string, boolean>>({});
   const [collectingPoints, setCollectingPoints] = useState(false);
+  const [receiptSaved, setReceiptSaved] = useState(false);
+  const [requestingApproval, setRequestingApproval] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (isOpen) {
       fetchApprovalStatus();
+      setReceiptSaved(false); // Reset saved flag when modal opens
     }
   }, [isOpen]);
 
@@ -34,7 +37,42 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
   const handleRequestApproval = async (productName: string) => {
     if (!receiptData) return;
 
+    // Set loading state for this specific product
+    setRequestingApproval(prev => ({ ...prev, [productName]: true }));
+
     try {
+      // First, save the receipt if not already saved
+      if (!receiptSaved) {
+        try {
+          const response = await receiptService.collectPoints(receiptData);
+          setReceiptSaved(true);
+
+          // Show the same toast as collect points
+          if (response.pointsAwarded > 0) {
+            toast.success(`${response.pointsAwarded} points collected successfully!`);
+          } else {
+            toast.info(response.message || 'Receipt saved. Points will be awarded when products are approved.');
+          }
+
+          // Notify parent to refresh points
+          if (onPointsCollected) {
+            onPointsCollected();
+          }
+        } catch (saveError: any) {
+          // If receipt was already collected, mark as saved but don't show error
+          const errorMessage = saveError.response?.data?.message || '';
+          if (errorMessage.includes('already been used')) {
+            setReceiptSaved(true);
+            toast.info('Receipt already saved');
+          } else {
+            // For other errors, show the error and disable button permanently
+            toast.error(errorMessage || 'Failed to save receipt');
+            setApprovalStatus(prev => ({ ...prev, [productName]: true })); // Disable button
+            return;
+          }
+        }
+      }
+
       const requestData: { productName: string; shopId?: string; rawStoreName?: string } = {
         productName,
       };
@@ -60,21 +98,31 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Failed to request approval';
       toast.error(errorMessage);
+      // Disable button on error
+      setApprovalStatus(prev => ({ ...prev, [productName]: true }));
+    } finally {
+      // Clear loading state
+      setRequestingApproval(prev => ({ ...prev, [productName]: false }));
     }
   };
 
-  const handleCollectPoints = async () => {
+  const handleCollectPoints = async (skipClose = false) => {
     if (!receiptData) return;
 
     try {
       setCollectingPoints(true);
       const response = await receiptService.collectPoints(receiptData);
 
-      // Show appropriate message based on points awarded
-      if (response.pointsAwarded > 0) {
-        toast.success(`${response.pointsAwarded} points collected successfully!`);
-      } else {
-        toast.info(response.message || 'Receipt saved. Points will be awarded when products are approved.');
+      // Mark receipt as saved
+      setReceiptSaved(true);
+
+      // Show appropriate message based on points awarded (only if not called silently)
+      if (!skipClose) {
+        if (response.pointsAwarded > 0) {
+          toast.success(`${response.pointsAwarded} points collected successfully!`);
+        } else {
+          toast.info(response.message || 'Receipt saved. Points will be awarded when products are approved.');
+        }
       }
 
       // Notify parent to refresh points
@@ -82,11 +130,19 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
         onPointsCollected();
       }
 
-      onClose();
+      // Close modal only if not called from approval request
+      if (!skipClose) {
+        onClose();
+      }
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Failed to collect points';
-      toast.error(errorMessage);
+
+      // Only show error if not skipping close (user explicitly clicked the button)
+      if (!skipClose) {
+        toast.error(errorMessage);
+      }
       console.error('Error collecting points:', error);
+      throw error; // Re-throw so approval request can handle it
     } finally {
       setCollectingPoints(false);
     }
@@ -116,7 +172,7 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
       <div className={styles.modal}>
         <div className={styles.header}>
           <h2>Receipt Processed</h2>
-          <button onClick={onClose} className={styles.closeButton}>
+          <button type="button" onClick={onClose} className={styles.closeButton}>
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
             </svg>
@@ -205,11 +261,16 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
                       <span className={styles.productQuantity}>x{product.quantity}</span>
                     </div>
                     <button
+                      type="button"
                       onClick={() => handleRequestApproval(product.product)}
                       className={styles.approvalButton}
-                      disabled={approvalStatus[product.product] === true}
+                      disabled={approvalStatus[product.product] === true || requestingApproval[product.product] === true}
                     >
-                      {approvalStatus[product.product] ? 'Pending' : 'Request Approval'}
+                      {requestingApproval[product.product]
+                        ? 'Requesting...'
+                        : approvalStatus[product.product]
+                        ? 'Pending'
+                        : 'Request Approval'}
                     </button>
                   </div>
                 ))}
@@ -235,6 +296,7 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
 
         <div className={styles.footer}>
           <button
+            type="button"
             onClick={handleCollectPoints}
             className={styles.doneButton}
             disabled={collectingPoints}
