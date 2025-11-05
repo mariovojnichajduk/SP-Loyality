@@ -13,6 +13,8 @@ export interface ProcessReceiptResponse {
   storeName?: string;
   rawStoreName?: string;
   shopId?: string;
+  receiptId?: string;
+  shopLocation?: string;
 }
 
 class ReceiptService {
