@@ -11,7 +11,6 @@ export default function Dashboard() {
   const [link, setLink] = useState('');
   const [loading, setLoading] = useState(false);
   const [userPoints, setUserPoints] = useState(0);
-  const [loadingPoints, setLoadingPoints] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [receiptData, setReceiptData] = useState<ProcessReceiptResponse | null>(null);
   const [isQRScannerOpen, setIsQRScannerOpen] = useState(false);
@@ -25,8 +24,6 @@ export default function Dashboard() {
       } catch (error) {
         toast.error('Failed to load points balance');
         console.error('Error fetching points:', error);
-      } finally {
-        setLoadingPoints(false);
       }
     };
 

@@ -14,7 +14,6 @@ interface ReceiptModalProps {
 
 export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCollected }: ReceiptModalProps) {
   const [approvalStatus, setApprovalStatus] = useState<Record<string, boolean>>({});
-  const [loadingStatus, setLoadingStatus] = useState(false);
   const [collectingPoints, setCollectingPoints] = useState(false);
 
   useEffect(() => {
@@ -25,17 +24,16 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
 
   const fetchApprovalStatus = async () => {
     try {
-      setLoadingStatus(true);
       const response = await productService.getApprovalStatus();
       setApprovalStatus(response.approvalStatus);
     } catch (error) {
       console.error('Failed to fetch approval status:', error);
-    } finally {
-      setLoadingStatus(false);
     }
   };
 
   const handleRequestApproval = async (productName: string) => {
+    if (!receiptData) return;
+
     try {
       const requestData: { productName: string; shopId?: string; rawStoreName?: string } = {
         productName,
@@ -51,7 +49,7 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
         requestData.rawStoreName = receiptData.rawStoreName;
       }
 
-      const response = await productService.requestApproval(requestData);
+      await productService.requestApproval(requestData);
       toast.success(`Approval requested for "${productName}"`);
 
       // Update approval status to disable the button
@@ -71,7 +69,13 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
     try {
       setCollectingPoints(true);
       const response = await receiptService.collectPoints(receiptData);
-      toast.success(`${response.pointsAwarded} points collected successfully!`);
+
+      // Show appropriate message based on points awarded
+      if (response.pointsAwarded > 0) {
+        toast.success(`${response.pointsAwarded} points collected successfully!`);
+      } else {
+        toast.info(response.message || 'Receipt saved. Points will be awarded when products are approved.');
+      }
 
       // Notify parent to refresh points
       if (onPointsCollected) {
@@ -233,10 +237,21 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
           <button
             onClick={handleCollectPoints}
             className={styles.doneButton}
-            disabled={collectingPoints || totalPoints === 0}
+            disabled={collectingPoints}
           >
-            {collectingPoints ? 'Collecting...' : 'Collect Points'}
+            {collectingPoints
+              ? 'Processing...'
+              : totalPoints > 0
+              ? 'Collect Points'
+              : pendingProducts.length > 0
+              ? 'Save Receipt'
+              : 'Collect Points'}
           </button>
+          {pendingProducts.length > 0 && totalPoints === 0 && (
+            <p className={styles.pendingNote}>
+              Your receipt will be saved. Points will be awarded when products are approved.
+            </p>
+          )}
         </div>
       </div>
     </div>

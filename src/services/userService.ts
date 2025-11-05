@@ -1,5 +1,4 @@
 import api from './api';
-import type { User } from './authService';
 
 interface UpdateNameData {
   name: string;
