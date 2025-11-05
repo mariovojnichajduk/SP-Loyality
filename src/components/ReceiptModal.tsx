@@ -132,7 +132,7 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
 
       // Close modal only if not called from approval request
       if (!skipClose) {
-        onClose();
+          onClose();
       }
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Failed to collect points';
@@ -297,7 +297,7 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
         <div className={styles.footer}>
           <button
             type="button"
-            onClick={handleCollectPoints}
+            onClick={() => handleCollectPoints()}
             className={styles.doneButton}
             disabled={collectingPoints}
           >
