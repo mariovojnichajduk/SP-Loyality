@@ -1,0 +1,159 @@
+.container {
+  min-height: 100vh;
+  background-color: var(--color-bg-primary);
+}
+
+.main {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  margin-bottom: 3rem;
+}
+
+.actionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.actionCard {
+  background-color: var(--color-bg-secondary);
+  border-radius: 12px;
+  padding: 2rem;
+  border: 1px solid var(--color-bg-tertiary);
+  transition: all 0.2s;
+}
+
+.actionCard:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 4px 12px rgba(168, 213, 186, 0.1);
+}
+
+.actionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.actionIcon {
+  width: 32px;
+  height: 32px;
+  color: var(--color-accent);
+}
+
+.actionDescription {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.scanButton {
+  width: 100%;
+  background-color: var(--color-accent);
+  color: var(--color-bg-primary);
+  font-weight: 600;
+  padding: 0.875rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.scanButton:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+}
+
+.scanButton:active:not(:disabled) {
+  background-color: var(--color-accent-dark);
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.linkInput {
+  width: 100%;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  padding: 0.875rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.linkInput:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(168, 213, 186, 0.1);
+}
+
+.linkInput::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.submitButton {
+  width: 100%;
+  background-color: var(--color-accent);
+  color: var(--color-bg-primary);
+  font-weight: 600;
+  padding: 0.875rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+}
+
+.submitButton:active:not(:disabled) {
+  background-color: var(--color-accent-dark);
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 2rem 1rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .actionCard {
+    padding: 1.5rem;
+  }
+
+  .actionTitle {
+    font-size: 1.125rem;
+  }
+}
