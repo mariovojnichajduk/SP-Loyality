@@ -1,12 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import Header from '../components/Header';
+import authService from '../services/authService';
 import styles from './Dashboard.module.css';
 
 export default function Dashboard() {
   const [link, setLink] = useState('');
   const [loading, setLoading] = useState(false);
-  const [userPoints, setUserPoints] = useState(0); // TODO: Fetch from API
+  const [userPoints, setUserPoints] = useState(0);
+
+  useEffect(() => {
+    // Load user data from localStorage
+    const user = authService.getUser();
+    if (user) {
+      setUserPoints(user.points);
+    }
+  }, []);
 
   const handleScanQR = () => {
     // TODO: Implement QR scanner functionality

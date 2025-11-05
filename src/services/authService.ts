@@ -22,14 +22,16 @@ export interface ResetPasswordData {
   newPassword: string;
 }
 
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  points: number;
+}
+
 export interface AuthResponse {
   access_token: string;
-  user?: {
-    id: string;
-    email: string;
-    name: string;
-    points: number;
-  };
+  user?: User;
 }
 
 class AuthService {
@@ -37,6 +39,9 @@ class AuthService {
     const response = await api.post('/auth/login', credentials);
     if (response.data.access_token) {
       localStorage.setItem('token', response.data.access_token);
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
     }
     return response.data;
   }
@@ -45,8 +50,15 @@ class AuthService {
     await api.post('/auth/register', data);
   }
 
-  async verifyEmail(data: VerifyEmailData): Promise<void> {
-    await api.post('/auth/verify-email', data);
+  async verifyEmail(data: VerifyEmailData): Promise<AuthResponse> {
+    const response = await api.post('/auth/verify-email', data);
+    if (response.data.access_token) {
+      localStorage.setItem('token', response.data.access_token);
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+    }
+    return response.data;
   }
 
   async resendVerification(email: string): Promise<void> {
@@ -63,11 +75,28 @@ class AuthService {
 
   logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     window.location.href = '/login';
   }
 
   getToken(): string | null {
     return localStorage.getItem('token');
+  }
+
+  getUser(): User | null {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        return JSON.parse(userStr);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  setUser(user: User): void {
+    localStorage.setItem('user', JSON.stringify(user));
   }
 
   isAuthenticated(): boolean {
