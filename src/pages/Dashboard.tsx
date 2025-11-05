@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import Header from '../components/Header';
+import ReceiptModal from '../components/ReceiptModal';
 import pointsService from '../services/pointsService';
+import receiptService, { type ProcessReceiptResponse } from '../services/receiptService';
 import styles from './Dashboard.module.css';
 
 export default function Dashboard() {
@@ -9,6 +11,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [userPoints, setUserPoints] = useState(0);
   const [loadingPoints, setLoadingPoints] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [receiptData, setReceiptData] = useState<ProcessReceiptResponse | null>(null);
 
   useEffect(() => {
     // Fetch user points from API
@@ -43,15 +47,23 @@ export default function Dashboard() {
     setLoading(true);
 
     try {
-      // TODO: Send link to API for processing
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      toast.success('Link processed successfully!');
+      const data = await receiptService.processReceipt(link);
+      setReceiptData(data);
+      setIsModalOpen(true);
       setLink('');
-    } catch (error) {
-      toast.error('Failed to process link. Please try again.');
+      toast.success('Receipt processed successfully!');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to process receipt. Please try again.';
+      toast.error(errorMessage);
+      console.error('Error processing receipt:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setReceiptData(null);
   };
 
   return (
@@ -146,6 +158,12 @@ export default function Dashboard() {
           </div>
         </div>
       </main>
+
+      <ReceiptModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        receiptData={receiptData}
+      />
     </div>
   );
 }
