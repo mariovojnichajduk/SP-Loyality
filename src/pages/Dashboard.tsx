@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import Header from '../components/Header';
 import ReceiptModal from '../components/ReceiptModal';
+import QRScannerModal from '../components/QRScannerModal';
 import pointsService from '../services/pointsService';
 import receiptService, { type ProcessReceiptResponse } from '../services/receiptService';
 import styles from './Dashboard.module.css';
@@ -13,6 +14,7 @@ export default function Dashboard() {
   const [loadingPoints, setLoadingPoints] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [receiptData, setReceiptData] = useState<ProcessReceiptResponse | null>(null);
+  const [isQRScannerOpen, setIsQRScannerOpen] = useState(false);
 
   useEffect(() => {
     // Fetch user points from API
@@ -32,8 +34,26 @@ export default function Dashboard() {
   }, []);
 
   const handleScanQR = () => {
-    // TODO: Implement QR scanner functionality
-    toast.info('QR Scanner will be implemented soon');
+    setIsQRScannerOpen(true);
+  };
+
+  const handleQRScan = async (scannedText: string) => {
+    console.log('Scanned QR Code:', scannedText);
+
+    // Process the scanned link just like manual submission
+    setLoading(true);
+    try {
+      const data = await receiptService.processReceipt(scannedText);
+      setReceiptData(data);
+      setIsModalOpen(true);
+      toast.success('Receipt processed successfully!');
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 'Failed to process receipt. Please try again.';
+      toast.error(errorMessage);
+      console.error('Error processing receipt:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmitLink = async (e: React.FormEvent) => {
@@ -163,6 +183,12 @@ export default function Dashboard() {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         receiptData={receiptData}
+      />
+
+      <QRScannerModal
+        isOpen={isQRScannerOpen}
+        onClose={() => setIsQRScannerOpen(false)}
+        onScan={handleQRScan}
       />
     </div>
   );
