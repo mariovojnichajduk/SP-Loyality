@@ -1,20 +1,30 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import Header from '../components/Header';
-import authService from '../services/authService';
+import pointsService from '../services/pointsService';
 import styles from './Dashboard.module.css';
 
 export default function Dashboard() {
   const [link, setLink] = useState('');
   const [loading, setLoading] = useState(false);
   const [userPoints, setUserPoints] = useState(0);
+  const [loadingPoints, setLoadingPoints] = useState(true);
 
   useEffect(() => {
-    // Load user data from localStorage
-    const user = authService.getUser();
-    if (user) {
-      setUserPoints(user.points);
-    }
+    // Fetch user points from API
+    const fetchPoints = async () => {
+      try {
+        const points = await pointsService.getUserPoints();
+        setUserPoints(points);
+      } catch (error) {
+        toast.error('Failed to load points balance');
+        console.error('Error fetching points:', error);
+      } finally {
+        setLoadingPoints(false);
+      }
+    };
+
+    fetchPoints();
   }, []);
 
   const handleScanQR = () => {
@@ -49,12 +59,13 @@ export default function Dashboard() {
       <Header points={userPoints} />
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Earn Loyalty Points</h1>
-        <p className={styles.subtitle}>
-          Scan a QR code or enter a link manually to collect your points
-        </p>
+        <div className={styles.content}>
+          <h1 className={styles.title}>Earn Loyalty Points</h1>
+          <p className={styles.subtitle}>
+            Scan a QR code or enter a link manually to collect your points
+          </p>
 
-        <div className={styles.actionsContainer}>
+          <div className={styles.actionsContainer}>
           {/* QR Scanner Card */}
           <div className={styles.actionCard}>
             <h2 className={styles.actionTitle}>
@@ -131,6 +142,7 @@ export default function Dashboard() {
                 {loading ? 'Processing...' : 'Submit Link'}
               </button>
             </form>
+          </div>
           </div>
         </div>
       </main>
