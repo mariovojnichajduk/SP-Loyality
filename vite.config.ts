@@ -35,6 +35,7 @@ export default defineConfig({
   ],
   server: {
     host: '0.0.0.0', // Expose to network
-    https: true, // Enable HTTPS
+    // Enable HTTPS with basic-ssl plugin; remove or configure 'https' as an object if needed
+    // https: true,
   },
 })
