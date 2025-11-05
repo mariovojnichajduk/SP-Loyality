@@ -14,6 +14,13 @@ export default function QRScannerModal({ isOpen, onClose, onScan }: QRScannerMod
   const handleScan = (result: any) => {
     if (result && result[0]?.rawValue) {
       const scannedText = result[0].rawValue;
+
+      // Validate that the URL contains suf.purs.gov.rs
+      if (!scannedText.includes('suf.purs.gov.rs')) {
+        toast.error('Invalid receipt QR code. Please scan a valid PU RS receipt.');
+        return;
+      }
+
       onScan(scannedText);
       onClose();
     }
@@ -53,8 +60,7 @@ export default function QRScannerModal({ isOpen, onClose, onScan }: QRScannerMod
               container: {
                 width: '100%',
                 height: '100%',
-              },
-              finderBorder: 4,
+              }
             }}
             components={{
               finder: false,
