@@ -21,6 +21,15 @@
   font-weight: 700;
   color: var(--color-accent);
   justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logoIcon {
+  width: 32px;
+  height: 32px;
+  color: var(--color-accent);
 }
 
 .navItems {
@@ -113,6 +122,11 @@
 
   .logo {
     font-size: 1rem;
+  }
+
+  .logoIcon {
+    width: 28px;
+    height: 28px;
   }
 
   .navItems {
