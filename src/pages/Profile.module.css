@@ -192,6 +192,178 @@
   color: var(--color-accent);
 }
 
+/* Transactions List Styles */
+.loadingText {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-secondary);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--color-text-secondary);
+}
+
+.emptyState p:first-child {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--color-text-primary);
+}
+
+.emptyStateSubtext {
+  font-size: 0.875rem;
+}
+
+.transactionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.transactionItem {
+  background-color: var(--color-bg-tertiary);
+  border-radius: 8px;
+  padding: 1.25rem;
+  border: 1px solid var(--color-bg-primary);
+  transition: all 0.2s;
+}
+
+.transactionItem:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.transactionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.transactionShop {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.shopIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-accent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.shopName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.shopLocation {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.transactionPoints {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  background-color: var(--color-bg-secondary);
+  border-radius: 6px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.coinIconSmall {
+  width: 20px;
+  height: 20px;
+  color: var(--color-accent);
+}
+
+.transactionDate {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.productsList {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-bg-primary);
+}
+
+.productsHeader {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.productItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.625rem 0.75rem;
+  background-color: var(--color-bg-secondary);
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.productItem:last-child {
+  margin-bottom: 0;
+}
+
+.productInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.productName {
+  font-size: 0.9375rem;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.productQuantity {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.productPoints {
+  flex-shrink: 0;
+}
+
+.pointsAwarded {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.pointsPending {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #f59e0b;
+  padding: 0.25rem 0.625rem;
+  background-color: rgba(245, 158, 11, 0.1);
+  border-radius: 4px;
+}
+
 @media (max-width: 768px) {
   .main {
     padding: 2rem 1rem;
@@ -212,5 +384,24 @@
   .saveButton,
   .cancelButton {
     width: 100%;
+  }
+
+  .transactionHeader {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .transactionPoints {
+    align-self: flex-start;
+  }
+
+  .transactionDate {
+    padding-left: 0;
+  }
+
+  .productInfo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
   }
 }

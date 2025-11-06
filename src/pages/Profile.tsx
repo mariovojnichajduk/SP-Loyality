@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import userService from '../services/userService';
 import pointsService from '../services/pointsService';
 import authService from '../services/authService';
+import transactionService, { type Transaction } from '../services/transactionService';
 import styles from './Profile.module.css';
 
 export default function Profile() {
@@ -18,8 +19,13 @@ export default function Profile() {
   const [newName, setNewName] = useState('');
   const [savingName, setSavingName] = useState(false);
 
+  // Transactions state
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loadingTransactions, setLoadingTransactions] = useState(true);
+
   useEffect(() => {
     fetchUserData();
+    fetchTransactions();
   }, []);
 
   const fetchUserData = async () => {
@@ -47,6 +53,18 @@ export default function Profile() {
       console.error('Error fetching profile:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchTransactions = async () => {
+    try {
+      const transactionsData = await transactionService.getMyTransactions();
+      setTransactions(transactionsData);
+    } catch (error) {
+      toast.error('Failed to load transactions');
+      console.error('Error fetching transactions:', error);
+    } finally {
+      setLoadingTransactions(false);
     }
   };
 
@@ -184,6 +202,104 @@ export default function Profile() {
                   <span>{userPoints}</span>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Transactions Card */}
+          <div className={styles.profileCard} style={{ marginTop: '2rem' }}>
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>Transaction History</h2>
+
+              {loadingTransactions ? (
+                <div className={styles.loadingText}>Loading transactions...</div>
+              ) : transactions.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <p>No transactions yet</p>
+                  <p className={styles.emptyStateSubtext}>
+                    Start scanning receipts to earn points!
+                  </p>
+                </div>
+              ) : (
+                <div className={styles.transactionsList}>
+                  {transactions.map((transaction) => (
+                    <div key={transaction.id} className={styles.transactionItem}>
+                      <div className={styles.transactionHeader}>
+                        <div className={styles.transactionShop}>
+                          <svg
+                            className={styles.shopIcon}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          <div>
+                            <div className={styles.shopName}>{transaction.shop.name}</div>
+                            <div className={styles.shopLocation}>{transaction.shop.location}</div>
+                          </div>
+                        </div>
+                        <div className={styles.transactionPoints}>
+                          <svg
+                            className={styles.coinIconSmall}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                            <path d="M12 6v12M8 10h8M8 14h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                          </svg>
+                          <span>{transaction.points}</span>
+                        </div>
+                      </div>
+
+                      <div className={styles.transactionDate}>
+                        {new Date(transaction.date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </div>
+
+                      {transaction.transactionProducts.length > 0 && (
+                        <div className={styles.productsList}>
+                          <div className={styles.productsHeader}>Products:</div>
+                          {transaction.transactionProducts.map((tp) => (
+                            <div key={tp.productId} className={styles.productItem}>
+                              <div className={styles.productInfo}>
+                                <span className={styles.productName}>
+                                  {tp.product.name}
+                                </span>
+                                <span className={styles.productQuantity}>
+                                  x{tp.quantity}
+                                </span>
+                              </div>
+                              <div className={styles.productPoints}>
+                                {tp.pointsAwarded ? (
+                                  <span className={styles.pointsAwarded}>
+                                    {tp.pointsValue} pts
+                                  </span>
+                                ) : (
+                                  <span className={styles.pointsPending}>
+                                    Pending approval
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
