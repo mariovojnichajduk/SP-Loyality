@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate PWA Icons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        canvas {
+            border: 2px solid #a8d5ba;
+            margin: 10px;
+        }
+        button {
+            background: #a8d5ba;
+            color: #1a1a1a;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #8fc19e;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #a8d5ba;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PWA Icon Generator</h1>
+        <p>Click the buttons below to download the PWA icons:</p>
+
+        <canvas id="canvas192" width="192" height="192"></canvas>
+        <canvas id="canvas512" width="512" height="512"></canvas>
+
+        <br>
+        <button onclick="downloadIcon(192)">Download 192x192 Icon</button>
+        <button onclick="downloadIcon(512)">Download 512x512 Icon</button>
+
+        <h3>Instructions:</h3>
+        <ol>
+            <li>Click both download buttons to save the icons</li>
+            <li>Save them as <code>pwa-192x192.png</code> and <code>pwa-512x512.png</code></li>
+            <li>Place them in the <code>frontend/public/</code> folder</li>
+            <li>Restart your dev server</li>
+        </ol>
+    </div>
+
+    <script>
+        function drawIcon(size) {
+            const canvas = document.getElementById(`canvas${size}`);
+            const ctx = canvas.getContext('2d');
+
+            // Background with rounded corners
+            ctx.fillStyle = '#a8d5ba';
+            const radius = size * 0.15;
+            ctx.beginPath();
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fill();
+
+            // Circle
+            ctx.strokeStyle = '#2d2d2d';
+            ctx.lineWidth = size * 0.04;
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size * 0.23, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // Cross/Plus sign
+            ctx.lineCap = 'round';
+            // Vertical line
+            ctx.beginPath();
+            ctx.moveTo(size / 2, size * 0.27);
+            ctx.lineTo(size / 2, size * 0.73);
+            ctx.stroke();
+            // Horizontal line
+            ctx.beginPath();
+            ctx.moveTo(size * 0.27, size / 2);
+            ctx.lineTo(size * 0.73, size / 2);
+            ctx.stroke();
+
+            // Text "LP"
+            ctx.fillStyle = '#2d2d2d';
+            ctx.font = `bold ${size * 0.09}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('LP', size / 2, size * 0.82);
+        }
+
+        function downloadIcon(size) {
+            const canvas = document.getElementById(`canvas${size}`);
+            const link = document.createElement('a');
+            link.download = `pwa-${size}x${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Draw icons when page loads
+        drawIcon(192);
+        drawIcon(512);
+    </script>
+</body>
+</html>
