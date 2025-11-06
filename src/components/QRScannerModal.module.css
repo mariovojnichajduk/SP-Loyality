@@ -120,6 +120,56 @@
   border-radius: 0 16px 0 0;
 }
 
+.cameraControls {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+  z-index: 10;
+}
+
+.controlButton {
+  width: 48px;
+  height: 48px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 2px solid var(--color-accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  padding: 0;
+}
+
+.controlButton:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+.controlButton:active {
+  transform: scale(0.95);
+}
+
+.controlButton svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.controlButton.active {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.controlButton.active:hover {
+  background-color: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+}
+
 .scannerOverlay::before,
 .scannerOverlay::after {
   content: '';

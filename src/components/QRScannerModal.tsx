@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Scanner } from '@yudiel/react-qr-scanner';
 import { toast } from 'react-toastify';
 import styles from './QRScannerModal.module.css';
@@ -13,6 +13,10 @@ export default function QRScannerModal({ isOpen, onClose, onScan }: QRScannerMod
   const [showManualInput, setShowManualInput] = useState(false);
   const [manualLink, setManualLink] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
+  const [torchEnabled, setTorchEnabled] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   if (!isOpen) return null;
 
@@ -46,7 +50,43 @@ export default function QRScannerModal({ isOpen, onClose, onScan }: QRScannerMod
     setShowManualInput(false);
     setManualLink('');
     setSubmitting(false);
+    setTorchEnabled(false);
     onClose();
+  };
+
+  const toggleCamera = () => {
+    setFacingMode(prev => prev === 'environment' ? 'user' : 'environment');
+  };
+
+  const toggleTorch = async () => {
+    try {
+      // Try to find the video element from the scanner
+      const videoElement = document.querySelector('video');
+      if (!videoElement || !videoElement.srcObject) {
+        toast.error('Camera not ready. Please wait and try again.');
+        return;
+      }
+
+      const stream = videoElement.srcObject as MediaStream;
+      const track = stream.getVideoTracks()[0];
+
+      // Check if torch is supported
+      const capabilities = track.getCapabilities() as any;
+      if (!capabilities.torch) {
+        toast.error('Flashlight not supported on this device');
+        return;
+      }
+
+      const newTorchState = !torchEnabled;
+      await track.applyConstraints({
+        advanced: [{ torch: newTorchState } as any]
+      });
+
+      setTorchEnabled(newTorchState);
+    } catch (error) {
+      console.error('Error toggling torch:', error);
+      toast.error('Failed to toggle flashlight');
+    }
   };
 
   const handleManualSubmit = async (e: React.FormEvent) => {
@@ -90,7 +130,7 @@ export default function QRScannerModal({ isOpen, onClose, onScan }: QRScannerMod
                 onScan={handleScan}
                 onError={handleError}
                 constraints={{
-                  facingMode: 'environment',
+                  facingMode: facingMode,
                 }}
                 styles={{
                   container: {
@@ -104,6 +144,34 @@ export default function QRScannerModal({ isOpen, onClose, onScan }: QRScannerMod
               />
               <div className={styles.scannerOverlay}>
                 <div className={styles.scannerFrame}></div>
+              </div>
+
+              {/* Camera Controls */}
+              <div className={styles.cameraControls}>
+                <button
+                  className={styles.controlButton}
+                  onClick={toggleCamera}
+                  aria-label="Switch camera"
+                  title="Switch camera"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 9L3 5L7 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M21 15L21 19L17 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M21 5C19 7.5 16 10 12 10C8 10 5 7.5 3 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M3 19C5 16.5 8 14 12 14C16 14 19 16.5 21 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+
+                <button
+                  className={`${styles.controlButton} ${torchEnabled ? styles.active : ''}`}
+                  onClick={toggleTorch}
+                  aria-label="Toggle flash"
+                  title="Toggle flash"
+                >
+                  <svg viewBox="0 0 24 24" fill={torchEnabled ? "currentColor" : "none"} xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
               </div>
             </div>
 
