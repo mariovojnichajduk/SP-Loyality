@@ -234,7 +234,7 @@ export default function Profile() {
             <div className={styles.section}>
               <h2 className={styles.sectionTitle}>Family Members</h2>
               <p className={styles.sectionDescription}>
-                Share points with family! When you earn more than 5 points on a receipt, each family member gets 1 bonus point.
+                Share points with family! When you earn more than 5 points on a receipt for pre-approved products, each family member gets 1 bonus point.
               </p>
               <button
                 onClick={() => navigate('/family')}

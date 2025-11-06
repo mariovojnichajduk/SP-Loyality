@@ -98,7 +98,7 @@ export default function Family() {
         <div className={styles.content}>
           <h1 className={styles.title}>Family Members</h1>
           <p className={styles.subtitle}>
-            Share the joy of earning points! When you earn more than 5 points on a receipt,
+            Share the joy of earning points! When you earn more than 5 points on a receipt for pre-approved products,
             each family member gets 1 bonus point.
           </p>
 
