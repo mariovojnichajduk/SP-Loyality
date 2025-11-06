@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import ReceiptModal from '../components/ReceiptModal';
 import QRScannerModal from '../components/QRScannerModal';
@@ -14,6 +15,7 @@ export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [receiptData, setReceiptData] = useState<ProcessReceiptResponse | null>(null);
   const [isQRScannerOpen, setIsQRScannerOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch user points from API
@@ -182,6 +184,33 @@ export default function Dashboard() {
               </button>
             </form>
           </div>
+          </div>
+
+          {/* Rewards Button */}
+          <div className={styles.rewardsSection}>
+            <button
+              onClick={() => navigate('/rewards')}
+              className={styles.rewardsButton}
+            >
+              <svg
+                className={styles.giftIcon}
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M20 12V22H4V12M2 7H22V12H2V7ZM12 7C12 5.89543 11.1046 5 10 5C8.89543 5 8 5.89543 8 7M12 7C12 5.89543 12.8954 5 14 5C15.1046 5 16 5.89543 16 7M12 7V22"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <div>
+                <div className={styles.rewardsButtonTitle}>Redeem Points</div>
+                <div className={styles.rewardsButtonSubtitle}>Browse available rewards</div>
+              </div>
+            </button>
           </div>
         </div>
       </main>

@@ -5,6 +5,7 @@ import userService from '../services/userService';
 import pointsService from '../services/pointsService';
 import authService from '../services/authService';
 import transactionService, { type Transaction } from '../services/transactionService';
+import rewardService, { type Redemption } from '../services/rewardService';
 import styles from './Profile.module.css';
 
 export default function Profile() {
@@ -23,9 +24,14 @@ export default function Profile() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loadingTransactions, setLoadingTransactions] = useState(true);
 
+  // Redemptions state
+  const [redemptions, setRedemptions] = useState<Redemption[]>([]);
+  const [loadingRedemptions, setLoadingRedemptions] = useState(true);
+
   useEffect(() => {
     fetchUserData();
     fetchTransactions();
+    fetchRedemptions();
   }, []);
 
   const fetchUserData = async () => {
@@ -65,6 +71,18 @@ export default function Profile() {
       console.error('Error fetching transactions:', error);
     } finally {
       setLoadingTransactions(false);
+    }
+  };
+
+  const fetchRedemptions = async () => {
+    try {
+      const redemptionsData = await rewardService.getUserRedemptions();
+      setRedemptions(redemptionsData);
+    } catch (error) {
+      toast.error('Failed to load redemption history');
+      console.error('Error fetching redemptions:', error);
+    } finally {
+      setLoadingRedemptions(false);
     }
   };
 
@@ -296,6 +314,84 @@ export default function Profile() {
                           ))}
                         </div>
                       )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Redemption History Card */}
+          <div className={styles.profileCard} style={{ marginTop: '2rem' }}>
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>Redemption History</h2>
+
+              {loadingRedemptions ? (
+                <div className={styles.loadingText}>Loading redemptions...</div>
+              ) : redemptions.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <p>No redemptions yet</p>
+                  <p className={styles.emptyStateSubtext}>
+                    Redeem rewards with your points to see them here!
+                  </p>
+                </div>
+              ) : (
+                <div className={styles.redemptionsList}>
+                  {redemptions.map((redemption) => (
+                    <div key={redemption.id} className={styles.redemptionItem}>
+                      <div className={styles.redemptionHeader}>
+                        <div className={styles.redemptionReward}>
+                          <svg
+                            className={styles.giftIconSmall}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M20 12V22H4V12M2 7H22V12H2V7ZM12 7C12 5.89543 11.1046 5 10 5C8.89543 5 8 5.89543 8 7M12 7C12 5.89543 12.8954 5 14 5C15.1046 5 16 5.89543 16 7M12 7V22"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          <div>
+                            <div className={styles.rewardName}>{redemption.reward.name}</div>
+                            <div className={styles.rewardDescription}>
+                              {redemption.reward.description}
+                            </div>
+                          </div>
+                        </div>
+                        <div className={styles.redemptionInfo}>
+                          <div className={styles.pointsSpent}>
+                            <svg
+                              className={styles.coinIconSmall}
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                              <path d="M12 6v12M8 10h8M8 14h8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                            </svg>
+                            <span>{redemption.pointsSpent}</span>
+                          </div>
+                          <span
+                            className={`${styles.redemptionStatus} ${styles[redemption.status]}`}
+                          >
+                            {redemption.status.charAt(0).toUpperCase() + redemption.status.slice(1)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className={styles.redemptionDate}>
+                        {new Date(redemption.createdAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </div>
                     </div>
                   ))}
                 </div>

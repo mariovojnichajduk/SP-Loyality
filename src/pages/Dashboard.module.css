@@ -145,6 +145,52 @@
   cursor: not-allowed;
 }
 
+/* Rewards Section */
+.rewardsSection {
+  margin-top: 3rem;
+  max-width: 600px;
+}
+
+.rewardsButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, var(--color-accent) 0%, #8fc19e 100%);
+  color: var(--color-bg-primary);
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(168, 213, 186, 0.3);
+}
+
+.rewardsButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(168, 213, 186, 0.4);
+}
+
+.giftIcon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.rewardsButtonTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: left;
+  margin-bottom: 0.25rem;
+}
+
+.rewardsButtonSubtitle {
+  font-size: 0.9375rem;
+  opacity: 0.9;
+  text-align: left;
+}
+
 @media (max-width: 768px) {
   .main {
     padding: 2rem 1rem;
