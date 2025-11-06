@@ -41,13 +41,48 @@
   gap: 1.5rem;
 }
 
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-bg-tertiary);
+  margin-bottom: 1.5rem;
+  user-select: none;
+  transition: opacity 0.2s;
+}
+
+.sectionHeader:hover {
+  opacity: 0.8;
+}
+
 .sectionTitle {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-text-primary);
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-bg-tertiary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.count {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.chevron {
+  width: 24px;
+  height: 24px;
+  color: var(--color-text-secondary);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.chevron.expanded {
+  transform: rotate(180deg);
 }
 
 .infoGroup {

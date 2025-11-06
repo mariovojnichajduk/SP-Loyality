@@ -28,6 +28,10 @@ export default function Profile() {
   const [redemptions, setRedemptions] = useState<Redemption[]>([]);
   const [loadingRedemptions, setLoadingRedemptions] = useState(true);
 
+  // Collapsible sections state
+  const [isTransactionsExpanded, setIsTransactionsExpanded] = useState(false);
+  const [isRedemptionsExpanded, setIsRedemptionsExpanded] = useState(false);
+
   useEffect(() => {
     fetchUserData();
     fetchTransactions();
@@ -226,18 +230,44 @@ export default function Profile() {
           {/* Transactions Card */}
           <div className={styles.profileCard} style={{ marginTop: '2rem' }}>
             <div className={styles.section}>
-              <h2 className={styles.sectionTitle}>Transaction History</h2>
+              <div
+                className={styles.sectionHeader}
+                onClick={() => setIsTransactionsExpanded(!isTransactionsExpanded)}
+              >
+                <h2 className={styles.sectionTitle}>
+                  Transaction History
+                  {!loadingTransactions && transactions.length > 0 && (
+                    <span className={styles.count}>({transactions.length})</span>
+                  )}
+                </h2>
+                <svg
+                  className={`${styles.chevron} ${isTransactionsExpanded ? styles.expanded : ''}`}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 9L12 15L18 9"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
 
-              {loadingTransactions ? (
-                <div className={styles.loadingText}>Loading transactions...</div>
-              ) : transactions.length === 0 ? (
-                <div className={styles.emptyState}>
-                  <p>No transactions yet</p>
-                  <p className={styles.emptyStateSubtext}>
-                    Start scanning receipts to earn points!
-                  </p>
-                </div>
-              ) : (
+              {isTransactionsExpanded && (
+                <>
+                  {loadingTransactions ? (
+                    <div className={styles.loadingText}>Loading transactions...</div>
+                  ) : transactions.length === 0 ? (
+                    <div className={styles.emptyState}>
+                      <p>No transactions yet</p>
+                      <p className={styles.emptyStateSubtext}>
+                        Start scanning receipts to earn points!
+                      </p>
+                    </div>
+                  ) : (
                 <div className={styles.transactionsList}>
                   {transactions.map((transaction) => (
                     <div key={transaction.id} className={styles.transactionItem}>
@@ -317,6 +347,8 @@ export default function Profile() {
                     </div>
                   ))}
                 </div>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -324,9 +356,35 @@ export default function Profile() {
           {/* Redemption History Card */}
           <div className={styles.profileCard} style={{ marginTop: '2rem' }}>
             <div className={styles.section}>
-              <h2 className={styles.sectionTitle}>Redemption History</h2>
+              <div
+                className={styles.sectionHeader}
+                onClick={() => setIsRedemptionsExpanded(!isRedemptionsExpanded)}
+              >
+                <h2 className={styles.sectionTitle}>
+                  Redemption History
+                  {!loadingRedemptions && redemptions.length > 0 && (
+                    <span className={styles.count}>({redemptions.length})</span>
+                  )}
+                </h2>
+                <svg
+                  className={`${styles.chevron} ${isRedemptionsExpanded ? styles.expanded : ''}`}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6 9L12 15L18 9"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
 
-              {loadingRedemptions ? (
+              {isRedemptionsExpanded && (
+                <>
+                  {loadingRedemptions ? (
                 <div className={styles.loadingText}>Loading redemptions...</div>
               ) : redemptions.length === 0 ? (
                 <div className={styles.emptyState}>
@@ -395,6 +453,8 @@ export default function Profile() {
                     </div>
                   ))}
                 </div>
+                  )}
+                </>
               )}
             </div>
           </div>
