@@ -24,6 +24,9 @@ export default function Header({ points }: HeaderProps) {
           <button onClick={() => navigate('/dashboard')} className={styles.navButton}>
             Home
           </button>
+          <button onClick={() => navigate('/stores')} className={styles.navButton}>
+            Stores
+          </button>
           <button onClick={() => navigate('/profile')} className={styles.navButton}>
             My Profile
           </button>

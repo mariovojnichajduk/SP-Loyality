@@ -9,6 +9,7 @@ import ResetPassword from './pages/auth/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Rewards from './pages/Rewards';
+import Stores from './pages/Stores';
 import authService from './services/authService';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -45,6 +46,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Rewards />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/stores"
+          element={
+            <ProtectedRoute>
+              <Stores />
             </ProtectedRoute>
           }
         />
