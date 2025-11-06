@@ -1,0 +1,364 @@
+.container {
+  min-height: 100vh;
+  background-color: var(--color-bg-primary);
+}
+
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-text-secondary);
+  font-size: 1.125rem;
+}
+
+/* Invitation Section */
+.invitationSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-bg-tertiary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.cardDescription {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.codeDisplay {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background-color: var(--color-bg-tertiary);
+  border-radius: 8px;
+  margin-top: 0.5rem;
+}
+
+.code {
+  flex: 1;
+  font-family: monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: 0.1em;
+}
+
+.copyButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-accent);
+  color: #1a1a1a;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.copyButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.copyButton:hover {
+  opacity: 0.9;
+}
+
+.joinButton {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-accent);
+  color: #1a1a1a;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 0.5rem;
+}
+
+.joinButton:hover {
+  opacity: 0.9;
+}
+
+.joinForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.joinInput {
+  padding: 0.75rem;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-bg-tertiary);
+  border-radius: 6px;
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  font-family: monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.joinInput:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.joinFormButtons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.submitButton,
+.cancelButton {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.submitButton {
+  background-color: var(--color-accent);
+  color: #1a1a1a;
+}
+
+.cancelButton {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+.submitButton:hover,
+.cancelButton:hover {
+  opacity: 0.9;
+}
+
+/* Members Section */
+.membersSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.membersList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.memberCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-bg-tertiary);
+  border-radius: 12px;
+  transition: border-color 0.2s;
+}
+
+.memberCard:hover {
+  border-color: var(--color-accent);
+}
+
+.memberInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.memberAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent), #7dd3ae);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.memberDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.memberName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.memberEmail {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.memberActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.memberPoints {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-bg-tertiary);
+  border-radius: 6px;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.memberPoints svg {
+  width: 20px;
+  height: 20px;
+}
+
+.removeButton {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: 1px solid #dc2626;
+  border-radius: 6px;
+  color: #dc2626;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 0;
+  padding: 0;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.removeButton:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: white;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-bg-tertiary);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.emptyState svg {
+  width: 64px;
+  height: 64px;
+  color: var(--color-text-secondary);
+  margin-bottom: 1rem;
+}
+
+.emptyState p {
+  margin: 0.5rem 0;
+  color: var(--color-text-primary);
+  font-size: 1.125rem;
+}
+
+.emptyStateHint {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .invitationSection {
+    grid-template-columns: 1fr;
+  }
+
+  .code {
+    font-size: 1.25rem;
+  }
+
+  .memberCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .memberActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

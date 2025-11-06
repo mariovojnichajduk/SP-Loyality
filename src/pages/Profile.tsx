@@ -1,4 +1,5 @@
 import { useState, useEffect, type FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Header from '../components/Header';
 import userService from '../services/userService';
@@ -9,6 +10,7 @@ import rewardService, { type Redemption } from '../services/rewardService';
 import styles from './Profile.module.css';
 
 export default function Profile() {
+  const navigate = useNavigate();
   const [userPoints, setUserPoints] = useState(0);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -224,6 +226,36 @@ export default function Profile() {
                   <span>{userPoints}</span>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Family Members Quick Link */}
+          <div className={styles.profileCard} style={{ marginTop: '2rem' }}>
+            <div className={styles.section}>
+              <h2 className={styles.sectionTitle}>Family Members</h2>
+              <p className={styles.sectionDescription}>
+                Share points with family! When you earn more than 5 points on a receipt, each family member gets 1 bonus point.
+              </p>
+              <button
+                onClick={() => navigate('/family')}
+                className={styles.familyButton}
+              >
+                <svg
+                  className={styles.familyIcon}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Manage Family Members
+              </button>
             </div>
           </div>
 

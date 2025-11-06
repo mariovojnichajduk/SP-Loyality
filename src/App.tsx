@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Rewards from './pages/Rewards';
 import Stores from './pages/Stores';
+import Family from './pages/Family';
 import authService from './services/authService';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -54,6 +55,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Stores />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/family"
+          element={
+            <ProtectedRoute>
+              <Family />
             </ProtectedRoute>
           }
         />
