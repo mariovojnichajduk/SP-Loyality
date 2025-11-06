@@ -54,6 +54,16 @@
   border-color: var(--color-accent);
 }
 
+.promotionCard {
+  border: 2px solid #ffa500;
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, rgba(255, 165, 0, 0.05) 100%);
+}
+
+.promotionCard:hover {
+  border-color: #ff8c00;
+  box-shadow: 0 8px 20px rgba(255, 165, 0, 0.3);
+}
+
 .storeHeader {
   display: flex;
   justify-content: space-between;
@@ -155,6 +165,38 @@
 .favoriteBadge svg {
   width: 16px;
   height: 16px;
+}
+
+.promotionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(255, 165, 0, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.promotionBadge svg {
+  width: 14px;
+  height: 14px;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 2px 8px rgba(255, 165, 0, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 165, 0, 0.5);
+  }
 }
 
 .emptyState {

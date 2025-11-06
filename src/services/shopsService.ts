@@ -6,6 +6,8 @@ export interface Shop {
   location: string;
   transactionCount: number;
   totalPoints: number;
+  additionalPoints: number;
+  hasPromotion: boolean;
   isFavorite: boolean;
   isTopPerformer: boolean;
   rank: number | null;

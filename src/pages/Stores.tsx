@@ -11,6 +11,8 @@ interface Shop {
   location: string;
   transactionCount: number;
   totalPoints: number;
+  additionalPoints: number;
+  hasPromotion: boolean;
   isFavorite: boolean;
   isTopPerformer: boolean;
   rank: number | null;
@@ -132,12 +134,24 @@ export default function Stores() {
 
           <div className={styles.storesList}>
             {shops.map((shop) => (
-              <div key={shop.id} className={styles.storeCard}>
+              <div key={shop.id} className={`${styles.storeCard} ${shop.hasPromotion ? styles.promotionCard : ''}`}>
                 <div className={styles.storeHeader}>
                   <div className={styles.storeInfo}>
                     <div className={styles.storeName}>
                       {shop.name}
                       {shop.isTopPerformer && getMedalIcon(shop.rank)}
+                      {shop.hasPromotion && (
+                        <span className={styles.promotionBadge}>
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                          </svg>
+                          +{shop.additionalPoints} bonus
+                        </span>
+                      )}
                     </div>
                     <div className={styles.storeLocation}>{shop.location}</div>
                   </div>
