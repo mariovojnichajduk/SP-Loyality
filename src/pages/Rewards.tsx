@@ -84,7 +84,7 @@ export default function Rewards() {
       <main className={styles.main}>
         <div className={styles.content}>
           <div className={styles.header}>
-            <button onClick={() => navigate('/')} className={styles.backButton}>
+            <button onClick={() => navigate('/dashboard')} className={styles.backButton}>
               <svg
                 className={styles.backIcon}
                 viewBox="0 0 24 24"

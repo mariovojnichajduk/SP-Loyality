@@ -9,7 +9,6 @@ import receiptService, { type ProcessReceiptResponse } from '../services/receipt
 import styles from './Dashboard.module.css';
 
 export default function Dashboard() {
-  const [link, setLink] = useState('');
   const [loading, setLoading] = useState(false);
   const [userPoints, setUserPoints] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,39 +36,13 @@ export default function Dashboard() {
   };
 
   const handleQRScan = async (scannedText: string) => {
-    console.log('Scanned QR Code:', scannedText);
+    console.log('Processing receipt link:', scannedText);
 
-    // Process the scanned link just like manual submission
     setLoading(true);
     try {
       const data = await receiptService.processReceipt(scannedText);
       setReceiptData(data);
       setIsModalOpen(true);
-      toast.success('Receipt processed successfully!');
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Failed to process receipt. Please try again.';
-      toast.error(errorMessage);
-      console.error('Error processing receipt:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSubmitLink = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!link.trim()) {
-      toast.error('Please enter a valid link');
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const data = await receiptService.processReceipt(link);
-      setReceiptData(data);
-      setIsModalOpen(true);
-      setLink('');
       toast.success('Receipt processed successfully!');
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Failed to process receipt. Please try again.';
@@ -103,10 +76,9 @@ export default function Dashboard() {
         <div className={styles.content}>
           <h1 className={styles.title}>Earn Loyalty Points</h1>
           <p className={styles.subtitle}>
-            Scan a QR code or enter a link manually to collect your points
+            Scan a QR code from your receipt to collect your points
           </p>
 
-          <div className={styles.actionsContainer}>
           {/* QR Scanner Card */}
           <div className={styles.actionCard}>
             <h2 className={styles.actionTitle}>
@@ -136,54 +108,6 @@ export default function Dashboard() {
             >
               Open Scanner
             </button>
-          </div>
-
-          {/* Manual Link Entry Card */}
-          <div className={styles.actionCard}>
-            <h2 className={styles.actionTitle}>
-              <svg
-                className={styles.actionIcon}
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Enter Link Manually
-            </h2>
-            <p className={styles.actionDescription}>
-              Have a loyalty link? Paste it here to collect your points
-            </p>
-            <form onSubmit={handleSubmitLink} className={styles.inputGroup}>
-              <input
-                type="text"
-                value={link}
-                onChange={(e) => setLink(e.target.value)}
-                placeholder="Paste your loyalty link here..."
-                className={styles.linkInput}
-              />
-              <button
-                type="submit"
-                disabled={loading || !link.trim()}
-                className={styles.submitButton}
-              >
-                {loading ? 'Processing...' : 'Submit Link'}
-              </button>
-            </form>
-          </div>
           </div>
 
           {/* Rewards Button */}
