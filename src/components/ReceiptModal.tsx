@@ -109,6 +109,11 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
   const handleCollectPoints = async (skipClose = false) => {
     if (!receiptData) return;
 
+    // Close modal immediately when user clicks the button (not when called from approval request)
+    if (!skipClose) {
+      onClose();
+    }
+
     try {
       setCollectingPoints(true);
       const response = await receiptService.collectPoints(receiptData);
@@ -128,11 +133,6 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
       // Notify parent to refresh points
       if (onPointsCollected) {
         onPointsCollected();
-      }
-
-      // Close modal only if not called from approval request
-      if (!skipClose) {
-          onClose();
       }
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 'Failed to collect points';
