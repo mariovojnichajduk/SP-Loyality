@@ -16,7 +16,7 @@ export default function Header({ points }: HeaderProps) {
   return (
     <header className={styles.header}>
       <nav className={styles.nav}>
-        <div className={styles.logo}>
+        <div className={styles.logo} onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>
           <svg
             className={styles.logoIcon}
             viewBox="0 0 512 512"
