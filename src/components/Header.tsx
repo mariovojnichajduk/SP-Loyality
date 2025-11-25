@@ -17,20 +17,11 @@ export default function Header({ points }: HeaderProps) {
     <header className={styles.header}>
       <nav className={styles.nav}>
         <div className={styles.logo} onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>
-          <svg
-            className={styles.logoIcon}
-            viewBox="0 0 512 512"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M140 180 L140 430 C140 445 150 455 165 455 L347 455 C362 455 372 445 372 430 L372 180 Z"
-                  fill="none" stroke="currentColor" strokeWidth="40" strokeLinejoin="round"/>
-            <line x1="120" y1="180" x2="392" y2="180" stroke="currentColor" strokeWidth="40" strokeLinecap="round"/>
-            <path d="M185 180 C185 140 210 110 256 110 C302 110 327 140 327 180"
-                  fill="none" stroke="currentColor" strokeWidth="40" strokeLinecap="round"/>
-            <path d="M256 260 L272 300 L315 305 L285 335 L293 378 L256 357 L219 378 L227 335 L197 305 L240 300 Z"
-                  fill="currentColor"/>
-          </svg>
-          <span>M-Star Loyalty</span>
+          <img
+            src="/goodwill-logo.png"
+            alt="Goodwill Pharma"
+            className={styles.logoImage}
+          />
         </div>
 
         <div className={styles.navItems}>

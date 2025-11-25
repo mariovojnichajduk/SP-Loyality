@@ -1,18 +1,16 @@
 <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <rect width="512" height="512" fill="#1a1a1a" rx="80"/>
+  <!-- Red rounded square background (tilted like Goodwill logo) -->
+  <g transform="translate(256, 256) rotate(-12) translate(-256, -256)">
+    <rect x="56" y="56" width="400" height="400" fill="#C8102E" rx="60"/>
+  </g>
 
-  <!-- 2D Shopping bag outline -->
-  <path d="M140 180 L140 430 C140 445 150 455 165 455 L347 455 C362 455 372 445 372 430 L372 180 Z"
-        fill="none" stroke="#a8d5ba" stroke-width="40" stroke-linejoin="round"/>
+  <!-- White 8-pointed star (Goodwill logo shape) -->
+  <g transform="translate(256, 256) rotate(-12) translate(-256, -256)">
+    <!-- Cross shape -->
+    <rect x="206" y="116" width="100" height="280" fill="white" rx="10"/>
+    <rect x="116" y="206" width="280" height="100" fill="white" rx="10"/>
 
-  <!-- Top opening -->
-  <line x1="120" y1="180" x2="392" y2="180" stroke="#a8d5ba" stroke-width="40" stroke-linecap="round"/>
-
-  <!-- Handle -->
-  <path d="M185 180 C185 140 210 110 256 110 C302 110 327 140 327 180"
-        fill="none" stroke="#a8d5ba" stroke-width="40" stroke-linecap="round"/>
-
-  <!-- Star in the middle -->
-  <path d="M256 260 L272 300 L315 305 L285 335 L293 378 L256 357 L219 378 L227 335 L197 305 L240 300 Z"
-        fill="#a8d5ba"/>
+    <!-- Corner diamonds to create 8-pointed star effect -->
+    <rect x="206" y="206" width="100" height="100" fill="white" transform="rotate(45, 256, 256)" />
+  </g>
 </svg>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Generate PWA Icons</title>
+    <title>Generate PWA Icons - Goodwill Pharma</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -10,12 +10,12 @@
             color: white;
         }
         canvas {
-            border: 2px solid #a8d5ba;
+            border: 2px solid #C8102E;
             margin: 10px;
         }
         button {
-            background: #a8d5ba;
-            color: #1a1a1a;
+            background: #C8102E;
+            color: white;
             border: none;
             padding: 10px 20px;
             font-size: 16px;
@@ -24,20 +24,20 @@
             border-radius: 5px;
         }
         button:hover {
-            background: #8fc19e;
+            background: #a50d26;
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
         }
         h1 {
-            color: #a8d5ba;
+            color: #C8102E;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>PWA Icon Generator</h1>
+        <h1>PWA Icon Generator - Goodwill Pharma</h1>
         <p>Click the buttons below to download the PWA icons:</p>
 
         <canvas id="canvas192" width="192" height="192"></canvas>
@@ -50,65 +50,51 @@
         <h3>Instructions:</h3>
         <ol>
             <li>Click both download buttons to save the icons</li>
-            <li>Save them as <code>pwa-192x192.png</code> and <code>pwa-512x512.png</code></li>
-            <li>Place them in the <code>frontend/public/</code> folder</li>
+            <li>Save them as <code>pwa.png</code> and <code>pwa-512x512.png</code></li>
+            <li>Place them in the <code>public/</code> folder</li>
             <li>Restart your dev server</li>
         </ol>
     </div>
 
     <script>
+        // Goodwill Pharma icon - Red rounded square with white 8-pointed star
+        const svgContent = `<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Red rounded square background (tilted like the logo) -->
+  <g transform="translate(256, 256) rotate(-12) translate(-256, -256)">
+    <rect x="56" y="56" width="400" height="400" fill="#C8102E" rx="60"/>
+  </g>
+
+  <!-- White 8-pointed star (Goodwill logo shape) -->
+  <g transform="translate(256, 256) rotate(-12) translate(-256, -256)">
+    <!-- Cross shape -->
+    <rect x="206" y="116" width="100" height="280" fill="white" rx="10"/>
+    <rect x="116" y="206" width="280" height="100" fill="white" rx="10"/>
+
+    <!-- Corner diamonds to create 8-pointed star effect -->
+    <rect x="206" y="206" width="100" height="100" fill="white" transform="rotate(45, 256, 256)" />
+  </g>
+</svg>`;
+
         function drawIcon(size) {
             const canvas = document.getElementById(`canvas${size}`);
             const ctx = canvas.getContext('2d');
 
-            // Background with rounded corners
-            ctx.fillStyle = '#a8d5ba';
-            const radius = size * 0.15;
-            ctx.beginPath();
-            ctx.moveTo(radius, 0);
-            ctx.lineTo(size - radius, 0);
-            ctx.quadraticCurveTo(size, 0, size, radius);
-            ctx.lineTo(size, size - radius);
-            ctx.quadraticCurveTo(size, size, size - radius, size);
-            ctx.lineTo(radius, size);
-            ctx.quadraticCurveTo(0, size, 0, size - radius);
-            ctx.lineTo(0, radius);
-            ctx.quadraticCurveTo(0, 0, radius, 0);
-            ctx.closePath();
-            ctx.fill();
+            const img = new Image();
+            const svgBlob = new Blob([svgContent], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(svgBlob);
 
-            // Circle
-            ctx.strokeStyle = '#2d2d2d';
-            ctx.lineWidth = size * 0.04;
-            ctx.beginPath();
-            ctx.arc(size / 2, size / 2, size * 0.23, 0, 2 * Math.PI);
-            ctx.stroke();
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, size, size);
+                URL.revokeObjectURL(url);
+            };
 
-            // Cross/Plus sign
-            ctx.lineCap = 'round';
-            // Vertical line
-            ctx.beginPath();
-            ctx.moveTo(size / 2, size * 0.27);
-            ctx.lineTo(size / 2, size * 0.73);
-            ctx.stroke();
-            // Horizontal line
-            ctx.beginPath();
-            ctx.moveTo(size * 0.27, size / 2);
-            ctx.lineTo(size * 0.73, size / 2);
-            ctx.stroke();
-
-            // Text "LP"
-            ctx.fillStyle = '#2d2d2d';
-            ctx.font = `bold ${size * 0.09}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('LP', size / 2, size * 0.82);
+            img.src = url;
         }
 
         function downloadIcon(size) {
             const canvas = document.getElementById(`canvas${size}`);
             const link = document.createElement('a');
-            link.download = `pwa-${size}x${size}.png`;
+            link.download = `pwa.png`;
             link.href = canvas.toDataURL('image/png');
             link.click();
         }

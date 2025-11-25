@@ -10,37 +10,31 @@ export default defineConfig({
     basicSsl(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['pwa-192x192.png', 'pwa-512x512.png'],
+      includeAssets: ['pwa.png'],
       devOptions: {
         enabled: true, // Enable in dev mode for testing
         type: 'module'
       },
       manifest: {
-        name: 'SP Loyalty Program',
-        short_name: 'SP Loyalty',
-        description: 'Scan receipts and earn loyalty points',
-        theme_color: '#a8d5ba',
-        background_color: '#1a1a1a',
+        name: 'Goodwill Loyalty',
+        short_name: 'Goodwill',
+        description: 'Goodwill Pharma Loyalty - Scan receipts and earn loyalty points',
+        theme_color: '#C8102E',
+        background_color: '#f5f5f5',
         display: 'standalone',
         orientation: 'portrait',
         start_url: '/',
         scope: '/',
         icons: [
           {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
+            src: 'pwa.png',
+            sizes: '200x200',
             type: 'image/png',
             purpose: 'any'
           },
           {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
+            src: 'pwa.png',
+            sizes: '200x200',
             type: 'image/png',
             purpose: 'maskable'
           }

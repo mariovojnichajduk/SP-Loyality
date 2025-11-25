@@ -26,10 +26,9 @@
   gap: 0.75rem;
 }
 
-.logoIcon {
-  width: 32px;
-  height: 32px;
-  color: var(--color-accent);
+.logoImage {
+  height: 36px;
+  width: auto;
 }
 
 .navItems {
@@ -53,7 +52,7 @@
 
 .navButton:hover {
   background-color: var(--color-accent);
-  color: #1a1a1a;
+  color: #ffffff;
 }
 
 .pointsDisplay {
@@ -98,7 +97,7 @@
 .pointsDisplay:hover .giftIcon {
   opacity: 1;
   position: static;
-  color: #1a1a1a;
+  color: #ffffff;
 }
 
 .points {
@@ -109,7 +108,7 @@
 }
 
 .pointsDisplay:hover .points {
-  color: #1a1a1a;
+  color: #ffffff;
 }
 
 @media (max-width: 768px) {
@@ -124,8 +123,7 @@
     font-size: 1rem;
   }
 
-  .logoIcon {
-    width: 28px;
+  .logoImage {
     height: 28px;
   }
 

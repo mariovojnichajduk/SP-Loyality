@@ -3,15 +3,17 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* Theme Colors */
-  --color-bg-primary: #1a1a1a;
-  --color-bg-secondary: #2d2d2d;
-  --color-bg-tertiary: #3a3a3a;
-  --color-text-primary: #e5e5e5;
-  --color-text-secondary: #b0b0b0;
-  --color-accent: #a8d5ba;
-  --color-accent-hover: #8bc9a3;
-  --color-accent-dark: #7ab893;
+  /* Theme Colors - Goodwill Pharma Branding (Light Theme) */
+  --color-bg-primary: #f5f5f5;
+  --color-bg-secondary: #ffffff;
+  --color-bg-tertiary: #e8e8e8;
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-accent: #C8102E;
+  --color-accent-hover: #a50d26;
+  --color-accent-dark: #8a0b20;
+  --color-accent-light: #e8132f;
+  --color-gray-brand: #58595B;
   --color-error: #ef4444;
   --color-success: #22c55e;
 
@@ -82,7 +84,7 @@ input, textarea {
 input:focus, textarea:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(168, 213, 186, 0.1);
+  box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.15);
 }
 
 input::placeholder, textarea::placeholder {
