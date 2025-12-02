@@ -63,7 +63,6 @@ export default function ReceiptModal({ isOpen, onClose, receiptData, onPointsCol
           const errorMessage = saveError.response?.data?.message || '';
           if (errorMessage.includes('already been used')) {
             setReceiptSaved(true);
-            toast.info('Receipt already saved');
           } else {
             // For other errors, show the error and disable button permanently
             toast.error(errorMessage || 'Failed to save receipt');
